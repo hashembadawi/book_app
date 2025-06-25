@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../utils/auth_utils.dart';
 
 class AddBookScreen extends StatefulWidget {
   @override
@@ -21,10 +24,14 @@ class _AddBookScreenState extends State<AddBookScreen> {
     setState(() => _isLoading = true);
 
     const String apiUrl = 'https://book-api-2wjm.onrender.com/api/books/add';
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Authorization': 'Bearer $token','Content-Type': 'application/json'},
         body: jsonEncode({
           'name': _nameController.text.trim(),
           'author': _authController.text.trim(),
@@ -58,7 +65,14 @@ class _AddBookScreenState extends State<AddBookScreen> {
         title: Text('Add New Book', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        elevation: 4,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () async {
+                logout(context);
+              },
+            ),
+          ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(24),
