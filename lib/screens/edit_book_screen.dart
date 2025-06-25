@@ -32,7 +32,7 @@ class _EditBookScreenState extends State<EditBookScreen> {
 
     setState(() => _isLoading = true);
 
-    final String apiUrl = 'http://localhost:10000/api/books/${widget.book.id}';
+    final String apiUrl = 'https://book-api-2wjm.onrender.com/api/books/${widget.book.id}';
 
     try {
       final response = await http.put(
@@ -82,7 +82,7 @@ class _EditBookScreenState extends State<EditBookScreen> {
 
     setState(() => _isLoading = true);
 
-    final String apiUrl = 'http://localhost:10000/api/books/${widget.book.id}';
+    final String apiUrl = 'https://book-api-2wjm.onrender.com/api/books/${widget.book.id}';
 
     try {
       final response = await http.delete(Uri.parse(apiUrl));

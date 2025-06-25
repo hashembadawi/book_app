@@ -20,7 +20,7 @@ class _BookListScreenState extends State<BookListScreen> {
   }
 
   Future<List<Book>> fetchBooks() async {
-    const String apiUrl = 'http://localhost:10000/api/books';
+    const String apiUrl = 'https://book-api-2wjm.onrender.com/api/books';
     try {
       final response = await http.get(Uri.parse(apiUrl));
 
