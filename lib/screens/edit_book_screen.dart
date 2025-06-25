@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/book.dart';
+import '../utils/auth_utils.dart';
 
 class EditBookScreen extends StatefulWidget {
   final Book book;
-
   EditBookScreen({required this.book});
-
   @override
   _EditBookScreenState createState() => _EditBookScreenState();
 }
@@ -33,11 +33,15 @@ class _EditBookScreenState extends State<EditBookScreen> {
     setState(() => _isLoading = true);
 
     final String apiUrl = 'https://book-api-2wjm.onrender.com/api/books/${widget.book.id}';
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
 
     try {
       final response = await http.put(
         Uri.parse(apiUrl),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'},
         body: jsonEncode({
           'name': _nameController.text.trim(),
           'author': _authorController.text.trim(),
@@ -83,9 +87,16 @@ class _EditBookScreenState extends State<EditBookScreen> {
     setState(() => _isLoading = true);
 
     final String apiUrl = 'https://book-api-2wjm.onrender.com/api/books/${widget.book.id}';
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
 
     try {
-      final response = await http.delete(Uri.parse(apiUrl));
+      final response = await http.delete(
+          Uri.parse(apiUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'},
+      );
 
       if (response.statusCode == 200) {
         Navigator.pop(context, true);
@@ -110,7 +121,14 @@ class _EditBookScreenState extends State<EditBookScreen> {
         title: Text('Edit Book', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
-        elevation: 4,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              logout(context);
+            },
+          ),
+        ],
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator(color: Colors.deepPurple))

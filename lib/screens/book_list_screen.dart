@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'add_book_screen.dart';
 import 'edit_book_screen.dart';
 import '../models/book.dart';
+import '../utils/auth_utils.dart';
 
 class BookListScreen extends StatefulWidget {
   @override
@@ -21,8 +23,16 @@ class _BookListScreenState extends State<BookListScreen> {
 
   Future<List<Book>> fetchBooks() async {
     const String apiUrl = 'https://book-api-2wjm.onrender.com/api/books';
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      final response = await http.get(
+          Uri.parse(apiUrl),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          }
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -48,8 +58,15 @@ class _BookListScreenState extends State<BookListScreen> {
       appBar: AppBar(
         title: Text('My Book Library', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         centerTitle: true,
-        elevation: 4,
         backgroundColor: Colors.deepPurple,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () async {
+              logout(context);
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
