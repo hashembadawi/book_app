@@ -63,8 +63,6 @@ class _RegisterScreenContentState extends State<RegisterScreenContent> {
         key: _formKey,
         child: Column(
           children: [
-            Icon(Icons.person_add, size: 80, color: Colors.deepPurple),
-            SizedBox(height: 20),
             if (_errorMessage != null)
               Text(_errorMessage!, style: TextStyle(color: Colors.red)),
             TextFormField(

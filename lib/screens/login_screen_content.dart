@@ -64,7 +64,6 @@ class _LoginScreenContentState extends State<LoginScreenContent> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          Icon(Icons.login, size: 80, color: Colors.deepPurple),
           SizedBox(height: 20),
           if (_errorMessage != null)
             Text(_errorMessage!, style: TextStyle(color: Colors.red)),
@@ -91,7 +90,7 @@ class _LoginScreenContentState extends State<LoginScreenContent> {
             onPressed: _isLoading ? null : _login,
             child: _isLoading
                 ? CircularProgressIndicator(color: Colors.white)
-                : Text('Login'),
+                : Text('Login',style: TextStyle(color: Colors.white)),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
               padding: EdgeInsets.symmetric(vertical: 14, horizontal: 40),
